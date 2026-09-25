@@ -10,7 +10,7 @@ import { VisitSheet } from "@/components/app/VisitSheet";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/mapa")({
-  validateSearch: (s: Record<string, unknown>) => ({ t: typeof s.t === "string" ? s.t : undefined }),
+  validateSearch: (s: Record<string, unknown>) => ({ t: typeof s["t"] === "string" ? s["t"] : undefined }),
   head: () => ({
     meta: [
       { title: "Mapa comercial — Tap Comercial" },

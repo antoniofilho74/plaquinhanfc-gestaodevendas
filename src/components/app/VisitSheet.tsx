@@ -14,7 +14,7 @@ const OPTIONS: { r: VisitResult; icon: typeof Check; cls: string }[] = [
   { r: "vendido", icon: Check, cls: "text-st-vendido" },
 ];
 
-export function VisitSheet({ estId, open, onClose }: { estId?: string; open: boolean; onClose: () => void }) {
+export function VisitSheet({ estId, open, onClose }: { estId?: string | undefined; open: boolean; onClose: () => void }) {
   const { est, registerVisit } = useStore();
   const [result, setResult] = useState<VisitResult | null>(null);
   const [note, setNote] = useState("");

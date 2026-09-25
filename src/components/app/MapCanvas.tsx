@@ -3,7 +3,7 @@ import { STATUS } from "@/lib/mock";
 import { cn } from "@/lib/utils";
 
 /** Simulated street map of central Petrolina (no external API). Coordinates are 0–100. */
-export function MapCanvas({ ests, selectedId, onSelect, highlight }: { ests: Establishment[]; selectedId?: string; onSelect: (id: string) => void; highlight?: string }) {
+export function MapCanvas({ ests, selectedId, onSelect, highlight }: { ests: Establishment[]; selectedId?: string | undefined; onSelect: (id: string) => void; highlight?: string | undefined }) {
   const road = (id: string) => (highlight && highlight !== id ? 0.55 : 1);
   return (
     <div className="absolute inset-0 overflow-hidden bg-[var(--map-land)]">

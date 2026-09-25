@@ -8,7 +8,7 @@ import { Progress, Sheet, Field, inputCls, Btn, StatusBadge } from "@/components
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/prospeccao")({
-  validateSearch: (s: Record<string, unknown>) => ({ t: typeof s.t === "string" ? s.t : "t1" }),
+  validateSearch: (s: Record<string, unknown>) => ({ t: typeof s["t"] === "string" ? s["t"] : "t1" }),
   head: () => ({
     meta: [
       { title: "Modo prospecção — Tap Comercial" },
@@ -31,7 +31,7 @@ const BIG: { r: VisitResult; icon: typeof Check; cls: string; ring: string }[] =
 function Prospect() {
   const { t } = Route.useSearch();
   const { ests, registerVisit } = useStore();
-  const terr = TERRITORIES.find((x) => x.id === t) ?? TERRITORIES[0];
+  const terr = TERRITORIES.find((x) => x.id === t) ?? TERRITORIES[0]!;
   // Freeze the route order at entry
   const [queue] = useState<Establishment[]>(() => ests.filter((e) => e.territoryId === terr.id).sort((a, b) => a.x + a.y * 0.01 - (b.x + b.y * 0.01)));
   const [idx, setIdx] = useState(() => {
@@ -133,7 +133,7 @@ function Prospect() {
         <p className="mb-3 text-sm text-muted-foreground">{cur?.name}</p>
         <div className="mb-3 flex gap-2">
           {[["Amanhã", "2026-09-26"], ["Seg", "2026-09-28"], ["Em 1 semana", "2026-10-02"]].map(([l, d]) => (
-            <button key={d} onClick={() => setDate(d)} className={cn("h-9 flex-1 rounded-lg border text-xs font-semibold", date === d && "border-primary bg-primary text-primary-foreground")}>{l}</button>
+            <button key={d} onClick={() => setDate(d!)} className={cn("h-9 flex-1 rounded-lg border text-xs font-semibold", date === d && "border-primary bg-primary text-primary-foreground")}>{l}</button>
           ))}
         </div>
         <div className="grid grid-cols-2 gap-2">

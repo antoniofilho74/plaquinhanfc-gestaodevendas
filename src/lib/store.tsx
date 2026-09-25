@@ -51,7 +51,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (result === "vendido") {
           setOrders((o) => [
             {
-              id: `o${Date.now()}`, number: `#00${115 + o.length}`, estId, productId: PRODUCTS[0].id, qty: 1,
+              id: `o${Date.now()}`, number: `#00${115 + o.length}`, estId, productId: "p1", qty: 1,
               stage: 0, paid: false, delivery: "2026-10-02", createdAt: TODAY, link: "https://exemplo.com",
             },
             ...o,

@@ -57,9 +57,9 @@ export type Establishment = {
   x: number;
   y: number;
   sellerId: string;
-  lastVisit?: { date: string; time: string };
+  lastVisit?: { date: string; time: string } | undefined;
   value: number;
-  notes?: string;
+  notes?: string | undefined;
 };
 
 type Row = [string, string, string, string, string, Status, number, number];
@@ -125,7 +125,7 @@ export const ESTABLISHMENTS: Establishment[] = ROWS.map((r, i) => {
   };
 });
 // Ótica Avenida specifics from the brief
-ESTABLISHMENTS[0].lastVisit = { date: "2026-09-25", time: "09:20" };
+ESTABLISHMENTS[0]!.lastVisit = { date: "2026-09-25", time: "09:20" };
 
 export type VisitResult = "vendido" | "interessado" | "retornar" | "ausente" | "nao_interessado" | "fechado" | "nao_visitar";
 export const RESULT_LABEL: Record<VisitResult, string> = {
@@ -191,10 +191,10 @@ export const ORDERS: Order[] = soldIds.map((estId, i) => ({
   id: `o${i + 1}`,
   number: `#${pad(0)}${115 + i}`.replace("#00", "#00"),
   estId,
-  productId: prods[i],
+  productId: prods[i]!,
   qty: i === 5 ? 2 : 1,
-  stage: stages[i],
-  paid: stages[i] >= 1,
+  stage: stages[i]!,
+  paid: stages[i]! >= 1,
   delivery: `2026-09-${pad(22 + i)}`,
   createdAt: `2026-09-${pad(14 + i)}`,
   link: `https://g.page/r/${slug(ESTABLISHMENTS.find((e) => e.id === estId)!.name)}`,

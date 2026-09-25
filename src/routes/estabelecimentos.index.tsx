@@ -36,7 +36,7 @@ function List() {
     ev.preventDefault();
     const d = new FormData(ev.currentTarget);
     const name = String(d.get("name") || "").trim();
-    if (!name) return toast.error("Informe o nome");
+    if (!name) { toast.error("Informe o nome"); return; }
     const tid = String(d.get("territory"));
     addEstablishment({
       id: `e${Date.now()}`, name, segment: String(d.get("segment") || "Outro"), contact: String(d.get("contact") || "—"),
