@@ -49,7 +49,7 @@ export function MapCanvas({ ests, selectedId, onSelect, highlight }: { ests: Est
             key={e.id}
             onClick={() => onSelect(e.id)}
             aria-label={e.name}
-            className="absolute -translate-x-1/2 -translate-y-full p-1.5"
+            className="absolute -translate-x-1/2 -translate-y-1/2 p-1.5"
             style={{ left: `${e.x}%`, top: `${e.y}%`, zIndex: sel ? 20 : 10 }}
           >
             <span className={cn("relative flex items-center justify-center rounded-full border-2 border-card shadow-float transition-transform", STATUS[e.status].dot, sel ? "h-8 w-8 scale-110" : "h-6 w-6")}>
