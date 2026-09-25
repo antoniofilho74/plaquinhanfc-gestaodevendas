@@ -10,33 +10,219 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as CrmRouteImport } from './routes/crm'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as EquipeRouteImport } from './routes/equipe'
+import { Route as FollowupsRouteImport } from './routes/followups'
+import { Route as MaisRouteImport } from './routes/mais'
+import { Route as MapaRouteImport } from './routes/mapa'
+import { Route as ProdutosRouteImport } from './routes/produtos'
+import { Route as ProspeccaoRouteImport } from './routes/prospeccao'
+import { Route as TerritoriosRouteImport } from './routes/territorios'
+import { Route as EstabelecimentosIndexRouteImport } from './routes/estabelecimentos.index'
+import { Route as EstabelecimentosIdRouteImport } from './routes/estabelecimentos.$id'
+import { Route as PedidosIndexRouteImport } from './routes/pedidos.index'
+import { Route as PedidosIdRouteImport } from './routes/pedidos.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CrmRoute = CrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EquipeRoute = EquipeRouteImport.update({
+  id: '/equipe',
+  path: '/equipe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FollowupsRoute = FollowupsRouteImport.update({
+  id: '/followups',
+  path: '/followups',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MaisRoute = MaisRouteImport.update({
+  id: '/mais',
+  path: '/mais',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapaRoute = MapaRouteImport.update({
+  id: '/mapa',
+  path: '/mapa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProdutosRoute = ProdutosRouteImport.update({
+  id: '/produtos',
+  path: '/produtos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProspeccaoRoute = ProspeccaoRouteImport.update({
+  id: '/prospeccao',
+  path: '/prospeccao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TerritoriosRoute = TerritoriosRouteImport.update({
+  id: '/territorios',
+  path: '/territorios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EstabelecimentosIndexRoute = EstabelecimentosIndexRouteImport.update({
+  id: '/estabelecimentos/',
+  path: '/estabelecimentos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EstabelecimentosIdRoute = EstabelecimentosIdRouteImport.update({
+  id: '/estabelecimentos/$id',
+  path: '/estabelecimentos/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PedidosIndexRoute = PedidosIndexRouteImport.update({
+  id: '/pedidos/',
+  path: '/pedidos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PedidosIdRoute = PedidosIdRouteImport.update({
+  id: '/pedidos/$id',
+  path: '/pedidos/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/crm': typeof CrmRoute
+  '/dashboard': typeof DashboardRoute
+  '/equipe': typeof EquipeRoute
+  '/followups': typeof FollowupsRoute
+  '/mais': typeof MaisRoute
+  '/mapa': typeof MapaRoute
+  '/produtos': typeof ProdutosRoute
+  '/prospeccao': typeof ProspeccaoRoute
+  '/territorios': typeof TerritoriosRoute
+  '/estabelecimentos/$id': typeof EstabelecimentosIdRoute
+  '/pedidos/$id': typeof PedidosIdRoute
+  '/estabelecimentos/': typeof EstabelecimentosIndexRoute
+  '/pedidos/': typeof PedidosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/crm': typeof CrmRoute
+  '/dashboard': typeof DashboardRoute
+  '/equipe': typeof EquipeRoute
+  '/followups': typeof FollowupsRoute
+  '/mais': typeof MaisRoute
+  '/mapa': typeof MapaRoute
+  '/produtos': typeof ProdutosRoute
+  '/prospeccao': typeof ProspeccaoRoute
+  '/territorios': typeof TerritoriosRoute
+  '/estabelecimentos/$id': typeof EstabelecimentosIdRoute
+  '/pedidos/$id': typeof PedidosIdRoute
+  '/estabelecimentos': typeof EstabelecimentosIndexRoute
+  '/pedidos': typeof PedidosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/crm': typeof CrmRoute
+  '/dashboard': typeof DashboardRoute
+  '/equipe': typeof EquipeRoute
+  '/followups': typeof FollowupsRoute
+  '/mais': typeof MaisRoute
+  '/mapa': typeof MapaRoute
+  '/produtos': typeof ProdutosRoute
+  '/prospeccao': typeof ProspeccaoRoute
+  '/territorios': typeof TerritoriosRoute
+  '/estabelecimentos/$id': typeof EstabelecimentosIdRoute
+  '/pedidos/$id': typeof PedidosIdRoute
+  '/estabelecimentos/': typeof EstabelecimentosIndexRoute
+  '/pedidos/': typeof PedidosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/configuracoes'
+    | '/crm'
+    | '/dashboard'
+    | '/equipe'
+    | '/followups'
+    | '/mais'
+    | '/mapa'
+    | '/produtos'
+    | '/prospeccao'
+    | '/territorios'
+    | '/estabelecimentos/$id'
+    | '/pedidos/$id'
+    | '/estabelecimentos/'
+    | '/pedidos/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/configuracoes'
+    | '/crm'
+    | '/dashboard'
+    | '/equipe'
+    | '/followups'
+    | '/mais'
+    | '/mapa'
+    | '/produtos'
+    | '/prospeccao'
+    | '/territorios'
+    | '/estabelecimentos/$id'
+    | '/pedidos/$id'
+    | '/estabelecimentos'
+    | '/pedidos'
+  id:
+    | '__root__'
+    | '/'
+    | '/configuracoes'
+    | '/crm'
+    | '/dashboard'
+    | '/equipe'
+    | '/followups'
+    | '/mais'
+    | '/mapa'
+    | '/produtos'
+    | '/prospeccao'
+    | '/territorios'
+    | '/estabelecimentos/$id'
+    | '/pedidos/$id'
+    | '/estabelecimentos/'
+    | '/pedidos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConfiguracoesRoute: typeof ConfiguracoesRoute
+  CrmRoute: typeof CrmRoute
+  DashboardRoute: typeof DashboardRoute
+  EquipeRoute: typeof EquipeRoute
+  FollowupsRoute: typeof FollowupsRoute
+  MaisRoute: typeof MaisRoute
+  MapaRoute: typeof MapaRoute
+  ProdutosRoute: typeof ProdutosRoute
+  ProspeccaoRoute: typeof ProspeccaoRoute
+  TerritoriosRoute: typeof TerritoriosRoute
+  EstabelecimentosIdRoute: typeof EstabelecimentosIdRoute
+  PedidosIdRoute: typeof PedidosIdRoute
+  EstabelecimentosIndexRoute: typeof EstabelecimentosIndexRoute
+  PedidosIndexRoute: typeof PedidosIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +234,123 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/configuracoes': {
+      id: '/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/crm': {
+      id: '/crm'
+      path: '/crm'
+      fullPath: '/crm'
+      preLoaderRoute: typeof CrmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/equipe': {
+      id: '/equipe'
+      path: '/equipe'
+      fullPath: '/equipe'
+      preLoaderRoute: typeof EquipeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/followups': {
+      id: '/followups'
+      path: '/followups'
+      fullPath: '/followups'
+      preLoaderRoute: typeof FollowupsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mais': {
+      id: '/mais'
+      path: '/mais'
+      fullPath: '/mais'
+      preLoaderRoute: typeof MaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mapa': {
+      id: '/mapa'
+      path: '/mapa'
+      fullPath: '/mapa'
+      preLoaderRoute: typeof MapaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/produtos': {
+      id: '/produtos'
+      path: '/produtos'
+      fullPath: '/produtos'
+      preLoaderRoute: typeof ProdutosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prospeccao': {
+      id: '/prospeccao'
+      path: '/prospeccao'
+      fullPath: '/prospeccao'
+      preLoaderRoute: typeof ProspeccaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/territorios': {
+      id: '/territorios'
+      path: '/territorios'
+      fullPath: '/territorios'
+      preLoaderRoute: typeof TerritoriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/estabelecimentos/': {
+      id: '/estabelecimentos/'
+      path: '/estabelecimentos'
+      fullPath: '/estabelecimentos/'
+      preLoaderRoute: typeof EstabelecimentosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/estabelecimentos/$id': {
+      id: '/estabelecimentos/$id'
+      path: '/estabelecimentos/$id'
+      fullPath: '/estabelecimentos/$id'
+      preLoaderRoute: typeof EstabelecimentosIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pedidos/': {
+      id: '/pedidos/'
+      path: '/pedidos'
+      fullPath: '/pedidos/'
+      preLoaderRoute: typeof PedidosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pedidos/$id': {
+      id: '/pedidos/$id'
+      path: '/pedidos/$id'
+      fullPath: '/pedidos/$id'
+      preLoaderRoute: typeof PedidosIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConfiguracoesRoute: ConfiguracoesRoute,
+  CrmRoute: CrmRoute,
+  DashboardRoute: DashboardRoute,
+  EquipeRoute: EquipeRoute,
+  FollowupsRoute: FollowupsRoute,
+  MaisRoute: MaisRoute,
+  MapaRoute: MapaRoute,
+  ProdutosRoute: ProdutosRoute,
+  ProspeccaoRoute: ProspeccaoRoute,
+  TerritoriosRoute: TerritoriosRoute,
+  EstabelecimentosIdRoute: EstabelecimentosIdRoute,
+  PedidosIdRoute: PedidosIdRoute,
+  EstabelecimentosIndexRoute: EstabelecimentosIndexRoute,
+  PedidosIndexRoute: PedidosIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
