@@ -22,7 +22,9 @@ type Ctx = {
   orders: Order[];
   products: typeof PRODUCTS;
   addProduct: (product: (typeof PRODUCTS)[number]) => void;
-  updateProduct: (id: string, name: string, price: number) => void;
+  updateProduct: (id: string, name: string, price: number, imageUrl?: string) => void;
+  archiveProduct: (id: string) => void;
+  unarchiveProduct: (id: string) => void;
   est: (id: string) => Establishment | undefined;
   registerVisit: (estId: string, result: VisitResult, note: string, ret?: { date: string; time: string }) => void;
   addFollowup: (estId: string, date: string, time: string, note: string) => void;
@@ -47,7 +49,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return {
       ests, visits, followups, orders, products,
       addProduct: (product) => setProducts((all) => [product, ...all]),
-      updateProduct: (id, name, price) => setProducts((all) => all.map((p) => (p.id === id ? { ...p, name, price } : p))),
+      updateProduct: (id, name, price, imageUrl?) => setProducts((all) => all.map((p) => (p.id === id ? { ...p, name, price, ...(imageUrl !== undefined ? { imageUrl } : {}) } : p))),
+      archiveProduct: (id) => setProducts((all) => all.map((p) => (p.id === id ? { ...p, archived: true } : p))),
+      unarchiveProduct: (id) => setProducts((all) => all.map((p) => (p.id === id ? { ...p, archived: false } : p))),
       est: (id) => ests.find((e) => e.id === id),
       registerVisit: (estId, result, note, ret) => {
         const time = nowTime();

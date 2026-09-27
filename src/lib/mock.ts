@@ -35,7 +35,7 @@ export const TERRITORIES: Territory[] = [
   { id: "t4", name: "Rua Pacífico da Luz", short: "Pacífico da Luz", bairro: "Centro" },
 ];
 
-export type Product = { id: string; name: string; price: number; active: boolean };
+export type Product = { id: string; name: string; price: number; active: boolean; archived?: boolean; imageUrl?: string };
 export const PRODUCTS: Product[] = [
   { id: "p1", name: "Placa Google NFC", price: 199, active: true },
   { id: "p2", name: "Placa Instagram NFC", price: 199, active: true },
