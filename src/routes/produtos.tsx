@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Nfc, Plus } from "lucide-react";
+import { Nfc, Plus, MoreHorizontal, Pencil } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { brl } from "@/lib/format";
 import { Btn, Field, PageHeader, Sheet, inputCls } from "@/components/app/ui";
+import type { Product } from "@/lib/mock";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/produtos")({
   head: () => ({
@@ -18,11 +25,36 @@ export const Route = createFileRoute("/produtos")({
 });
 
 function Products() {
-  const { orders, products, addProduct } = useStore();
+  const { orders, products, addProduct, updateProduct } = useStore();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [error, setError] = useState("");
+  const [editOpen, setEditOpen] = useState(false);
+  const [editProduct, setEditProduct] = useState<Product | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editPrice, setEditPrice] = useState("");
+  const [editError, setEditError] = useState("");
+
+  const openEdit = (p: Product) => {
+    setEditProduct(p);
+    setEditName(p.name);
+    setEditPrice(String(p.price));
+    setEditError("");
+    setEditOpen(true);
+  };
+
+  const saveEdit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!editProduct) return;
+    const parsedPrice = Number(editPrice.replace(",", "."));
+    if (!editName.trim() || !Number.isFinite(parsedPrice) || parsedPrice <= 0) {
+      setEditError("Informe o nome e um preço válido.");
+      return;
+    }
+    updateProduct(editProduct.id, editName.trim(), parsedPrice);
+    setEditOpen(false);
+  };
 
   const saveProduct = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -56,10 +88,38 @@ function Products() {
                 <div className="text-xs text-muted-foreground">{sold} vendidas · <span className="text-st-vendido">Ativo</span></div>
               </div>
               <div className="tabular font-semibold">{brl(p.price)}</div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    aria-label="Opções do produto"
+                    className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-40">
+                  <DropdownMenuItem onClick={() => openEdit(p)} className="gap-2">
+                    <Pencil className="h-4 w-4" />
+                    Editar produto
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           );
         })}
       </div>
+      <Sheet open={editOpen} onClose={() => { setEditOpen(false); setEditError(""); }} title="Editar produto">
+        <form onSubmit={saveEdit} className="space-y-4 pt-3">
+          <Field label="Nome do produto">
+            <input className={inputCls} value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Ex.: Placa Google NFC" required autoFocus />
+          </Field>
+          <Field label="Preço (R$)">
+            <input className={inputCls} type="number" min="0.01" step="0.01" value={editPrice} onChange={(e) => setEditPrice(e.target.value)} placeholder="199,00" required />
+          </Field>
+          {editError && <p role="alert" className="text-sm text-destructive">{editError}</p>}
+          <Btn type="submit" className="w-full">Salvar alterações</Btn>
+        </form>
+      </Sheet>
       <Sheet open={open} onClose={() => { setOpen(false); setError(""); }} title="Cadastrar produto">
         <form onSubmit={saveProduct} className="space-y-4 pt-3">
           <Field label="Nome do produto">
