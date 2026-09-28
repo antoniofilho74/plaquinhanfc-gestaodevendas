@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Search, Columns3, List, CalendarClock } from "lucide-react";
+import { Search, Columns3, List, CalendarClock, Plus } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { STATUS, type Status, type Establishment } from "@/lib/mock";
 import { brl, relDay } from "@/lib/format";
-import { Chip, PageHeader, StatusDot, inputCls } from "@/components/app/ui";
+import { Chip, PageHeader, StatusDot, inputCls, Sheet, Field, Btn } from "@/components/app/ui";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/crm")({
@@ -29,11 +29,45 @@ const STAGES: { s: Status; label: string }[] = [
   { s: "nao_interessado", label: "Não interessado" },
 ];
 
+const EMPTY_FORM = { nome: "", whatsapp: "", estabelecimento: "", rua: "", bairro: "", cidade: "" };
+
 function Crm() {
-  const { ests, followups } = useStore();
+  const { ests, followups, addEstablishment } = useStore();
   const [view, setView] = useState<"kanban" | "lista">("lista");
   const [stage, setStage] = useState<Status | "all">("all");
   const [q, setQ] = useState("");
+  const [addOpen, setAddOpen] = useState(false);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [saving, setSaving] = useState(false);
+
+  const set = (k: keyof typeof EMPTY_FORM) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const handleSave = () => {
+    if (!form.nome.trim() || !form.estabelecimento.trim()) return;
+    setSaving(true);
+    const id = `e${Date.now()}`;
+    addEstablishment({
+      id,
+      name: form.estabelecimento.trim(),
+      segment: "Lead manual",
+      contact: form.nome.trim(),
+      whatsapp: form.whatsapp.trim(),
+      instagram: "",
+      street: [form.rua.trim(), form.bairro.trim()].filter(Boolean).join(" — "),
+      number: "",
+      territoryId: "",
+      status: "nao_visitado",
+      x: 0,
+      y: 0,
+      sellerId: "u1",
+      value: 0,
+      notes: `Cidade: ${form.cidade.trim()}`,
+    });
+    setSaving(false);
+    setForm(EMPTY_FORM);
+    setAddOpen(false);
+  };
   const filtered = ests.filter((e) => !q || e.name.toLowerCase().includes(q.toLowerCase()));
   const nextOf = (id: string) => followups.filter((f) => f.estId === id && !f.done).sort((a, b) => a.date.localeCompare(b.date))[0];
   const pipeline = ests.filter((e) => ["interessado", "negociacao", "retornar"].includes(e.status)).reduce((s, e) => s + e.value, 0);
@@ -65,7 +99,15 @@ function Crm() {
         title="CRM"
         subtitle={`${ests.length} leads · ${brl(pipeline)} em aberto`}
         action={
-          <div className="flex rounded-lg border bg-card p-0.5">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setAddOpen(true)}
+              aria-label="Adicionar lead"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border bg-primary text-primary-foreground shadow-sm transition hover:bg-primary/90 active:scale-[0.97]"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+            <div className="flex rounded-lg border bg-card p-0.5">
             {(["kanban", "lista"] as const).map((v) => (
               <button key={v} onClick={() => setView(v)} className={cn("inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-semibold uppercase", view === v ? "bg-primary text-primary-foreground" : "text-muted-foreground")}>
                 {v === "kanban" ? <Columns3 className="h-3.5 w-3.5" /> : <List className="h-3.5 w-3.5" />}
@@ -73,8 +115,84 @@ function Crm() {
               </button>
             ))}
           </div>
+            </div>
         }
       />
+
+      <Sheet
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        title="Novo lead"
+        footer={
+          <div className="flex gap-2">
+            <Btn variant="outline" className="flex-1" onClick={() => setAddOpen(false)} disabled={saving}>
+              Cancelar
+            </Btn>
+            <Btn variant="primary" className="flex-1" onClick={handleSave} disabled={saving || !form.nome.trim() || !form.estabelecimento.trim()}>
+              {saving ? "Salvando…" : "Salvar lead"}
+            </Btn>
+          </div>
+        }
+      >
+        <div className="space-y-4 pt-2">
+          <Field label="Nome do contato *">
+            <input
+              className={inputCls}
+              placeholder="Ex.: João Silva"
+              value={form.nome}
+              onChange={set("nome")}
+              autoComplete="off"
+            />
+          </Field>
+          <Field label="WhatsApp">
+            <input
+              className={inputCls}
+              placeholder="(87) 9 0000-0000"
+              value={form.whatsapp}
+              onChange={set("whatsapp")}
+              inputMode="tel"
+              autoComplete="off"
+            />
+          </Field>
+          <Field label="Nome do estabelecimento *">
+            <input
+              className={inputCls}
+              placeholder="Ex.: Padaria do João"
+              value={form.estabelecimento}
+              onChange={set("estabelecimento")}
+              autoComplete="off"
+            />
+          </Field>
+          <Field label="Rua / Avenida">
+            <input
+              className={inputCls}
+              placeholder="Ex.: Av. Souza Filho, 120"
+              value={form.rua}
+              onChange={set("rua")}
+              autoComplete="off"
+            />
+          </Field>
+          <Field label="Bairro">
+            <input
+              className={inputCls}
+              placeholder="Ex.: Centro"
+              value={form.bairro}
+              onChange={set("bairro")}
+              autoComplete="off"
+            />
+          </Field>
+          <Field label="Cidade">
+            <input
+              className={inputCls}
+              placeholder="Ex.: Petrolina"
+              value={form.cidade}
+              onChange={set("cidade")}
+              autoComplete="off"
+            />
+          </Field>
+        </div>
+      </Sheet>
+
       <div className="relative mb-3">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input className={cn(inputCls, "pl-9")} placeholder="Buscar lead" value={q} onChange={(e) => setQ(e.target.value)} />
