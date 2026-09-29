@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Search, Columns3, List, CalendarClock, Plus } from "lucide-react";
+import { Search, Columns3, List, CalendarClock, Plus, Sparkles } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { STATUS, type Status, type Establishment } from "@/lib/mock";
 import { brl, relDay } from "@/lib/format";
@@ -31,6 +31,41 @@ const STAGES: { s: Status; label: string }[] = [
 
 const EMPTY_FORM = { nome: "", whatsapp: "", estabelecimento: "", rua: "", bairro: "", cidade: "" };
 
+type SpeechResultEvent = { results: ArrayLike<ArrayLike<{ transcript: string }>> };
+type SpeechRecognitionLike = {
+  lang: string;
+  interimResults: boolean;
+  onresult: ((event: SpeechResultEvent) => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+};
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+function parseVoiceLead(transcript: string) {
+  const labels: Record<string, keyof typeof EMPTY_FORM> = {
+    nome: "nome",
+    whatsapp: "whatsapp",
+    telefone: "whatsapp",
+    estabelecimento: "estabelecimento",
+    empresa: "estabelecimento",
+    rua: "rua",
+    avenida: "rua",
+    bairro: "bairro",
+    cidade: "cidade",
+  };
+  const keys = Object.keys(labels).join("|");
+  const pattern = new RegExp(`(?:^|[,;.])\\s*(${keys})\\s*[:：]\\s*([^,;.]+)`, "gi");
+  const values: Partial<typeof EMPTY_FORM> = {};
+  let match: RegExpExecArray | null;
+  while ((match = pattern.exec(transcript)) !== null) {
+    const key = labels[match[1].toLowerCase()];
+    if (key) values[key] = match[2].trim();
+  }
+  return values;
+}
+
 function Crm() {
   const { ests, followups, addEstablishment } = useStore();
   const [view, setView] = useState<"kanban" | "lista">("lista");
@@ -39,6 +74,57 @@ function Crm() {
   const [addOpen, setAddOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [voiceMessage, setVoiceMessage] = useState("");
+  const [recognition, setRecognition] = useState<SpeechRecognitionLike | null>(null);
+
+  const toggleVoiceInput = () => {
+    if (listening) {
+      recognition?.stop();
+      setListening(false);
+      return;
+    }
+
+    const speechWindow = window as Window & {
+      SpeechRecognition?: SpeechRecognitionConstructor;
+      webkitSpeechRecognition?: SpeechRecognitionConstructor;
+    };
+    const SpeechRecognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setVoiceMessage("O ditado por voz não é compatível com este navegador. Você pode preencher os campos manualmente.");
+      return;
+    }
+
+    const instance = new SpeechRecognition();
+    instance.lang = "pt-BR";
+    instance.interimResults = false;
+    instance.onresult = (event) => {
+      const transcript = Array.from(event.results).map((result) => result[0]?.transcript ?? "").join(" ");
+      const parsed = parseVoiceLead(transcript);
+      if (Object.keys(parsed).length) {
+        setForm((current) => ({ ...current, ...parsed }));
+        setVoiceMessage("Dados reconhecidos. Confira os campos antes de salvar.");
+      } else {
+        setVoiceMessage("Não identifiquei os campos. Dite no formato indicado abaixo e tente novamente.");
+      }
+    };
+    instance.onerror = (event) => {
+      setListening(false);
+      setVoiceMessage(event.error === "not-allowed" || event.error === "service-not-allowed"
+        ? "Permita o acesso ao microfone nas configurações do navegador e tente novamente."
+        : "Não foi possível reconhecer a fala. Tente novamente ou preencha os campos manualmente.");
+    };
+    instance.onend = () => setListening(false);
+    setRecognition(instance);
+    setVoiceMessage("Fale os campos com seus nomes, por exemplo: nome: Ana, WhatsApp: 87999999999, estabelecimento: Padaria Central, rua: Avenida Brasil, bairro: Centro, cidade: Petrolina.");
+    setListening(true);
+    try {
+      instance.start();
+    } catch {
+      setListening(false);
+      setVoiceMessage("Não foi possível iniciar o microfone. Confira a permissão do navegador e tente novamente.");
+    }
+  };
 
   const set = (k: keyof typeof EMPTY_FORM) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -135,6 +221,20 @@ function Crm() {
         }
       >
         <div className="space-y-4 pt-2">
+          <div className="rounded-xl border border-border/70 bg-muted/40 p-3">
+            <button
+              type="button"
+              onClick={toggleVoiceInput}
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-primary-foreground transition hover:opacity-90 active:scale-[0.98]"
+              aria-pressed={listening}
+            >
+              <Sparkles className="h-4 w-4" />
+              {listening ? "Parar ditado" : "Cadastrar por voz"}
+            </button>
+            <p aria-live="polite" className="mt-2 text-xs leading-relaxed text-muted-foreground">
+              {voiceMessage || "Dite os dados no formato: nome: Ana, WhatsApp: 87999999999, estabelecimento: Padaria Central, rua: Avenida Brasil, bairro: Centro, cidade: Petrolina."}
+            </p>
+          </div>
           <Field label="Nome do contato *">
             <input
               className={inputCls}
